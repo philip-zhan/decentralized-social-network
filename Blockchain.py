@@ -41,7 +41,7 @@ class Blockchain:
         if not self.is_valid_proof(block, proof):
             return False
 
-        # block.hash = proof
+        block.hash = proof
         self.chain.append(block)
         return True
 
