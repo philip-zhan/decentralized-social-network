@@ -5,7 +5,7 @@ from flask import render_template, redirect, request
 from client import app
 
 
-CONNECTED_NODE_ADDRESS = "http://a2b8f7fb.ngrok.io"
+CONNECTED_NODE_ADDRESS = "http://127.0.0.1:8000"
 posts = []
 
 
