@@ -8,21 +8,18 @@ app = Flask(__name__)
 # the node's copy of blockchain
 blockchain = Blockchain()
 
+
 # endpoint to submit a new transaction. This will be used by
 # our application to add new data (posts) to the blockchain
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
     required_fields = ["author", "content"]
-
     for field in required_fields:
         if not tx_data.get(field):
             return "Invlaid transaction data", 404
-
     tx_data["timestamp"] = time.time()
-
     blockchain.add_new_transaction(tx_data)
-
     return "Success", 201
 
 
@@ -54,11 +51,6 @@ def mine_unconfirmed_transactions():
 @app.route('/pending_tx')
 def get_pending_tx():
     return json.dumps(blockchain.unconfirmed_transactions)
-
-
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
 
 
 if __name__ == '__main__':
