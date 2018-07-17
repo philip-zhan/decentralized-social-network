@@ -1,10 +1,11 @@
 from flask import Flask, request
 import json
 import time
-import Blockchain
+from Blockchain import Blockchain
 
 
 app = Flask(__name__)
+# the node's copy of blockchain
 blockchain = Blockchain()
 
 # endpoint to submit a new transaction. This will be used by
