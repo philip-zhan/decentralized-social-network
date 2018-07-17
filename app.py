@@ -1,8 +1,8 @@
-from flask import Flask,request
+from flask import Flask, request
 from hashlib import sha256
 import json
 import time
-import requests
+
 
 class Block:
     def __init__(self, index, transactions, timestamp, previous_hash):
@@ -110,9 +110,11 @@ class Blockchain:
         self.unconfirmed_transactions = []
         return new_block.index
 
+
 app = Flask(__name__)
 
 blockchain = Blockchain()
+
 
 # endpoint to submit a new transaction. This will be used by
 # our application to add new data (posts) to the blockchain
@@ -130,6 +132,7 @@ def new_transaction():
     blockchain.add_new_transaction(tx_data)
 
     return "Success", 201
+
 
 # endpoint to return the node's copy of the chain.
 # Our application will be using this endpoint to query
@@ -153,12 +156,13 @@ def mine_unconfirmed_transactions():
     if not result:
         return "No transactions to mine"
     return "Block #{} is mined.".format(result)
- 
- 
+
+
 # endpoint to query unconfirmed transactions
 @app.route('/pending_tx')
 def get_pending_tx():
     return json.dumps(blockchain.unconfirmed_transactions)
+
 
 # @app.route('/')
 # def hello_world():
