@@ -1,14 +1,33 @@
 import subprocess
 import requests
+import firebase
 import server
+import client
 
-api_path = 'https://firestore.googleapis.com/v1beta1/'
-data_path = 'projects/dsn-tracker/databases/(default)/documents/peer/address'
-path = api_path + data_path
-response = requests.get(path)
-if response.ok:
-    peers = response.json()['fields']['list']['arrayValue']['values']
-    peers = [peer['stringValue'] for peer in peers]
+
+def main():
+    public_url = run_ngrok()
+    peers = firebase.get_peers()
+    run_server(peers)
+
+
+def run_ngrok():
+    subprocess.Popen(['./ngrok', 'http', '8000'], stdout=subprocess.PIPE)
+    response = requests.get('http://localhost:4040/api/tunnels')
+    if response.ok and len(response.json()['tunnels']) > 0:
+        tunnels = response.json()['tunnels']
+        for tunnel in tunnels:
+            if tunnel['proto'] == 'http' and tunnel['config']['addr'] == 'localhost:8000':
+                public_url = tunnel['public_url']
+                print('Public URL:', public_url)
+                return public_url
+    print('Failed to start ngrok')
+    exit()
+
+
+def run_server(peers):
     server.main(peers)
-else:
-    print("Failed to access tracker at ", path)
+
+
+if __name__ == '__main__':
+    main()
