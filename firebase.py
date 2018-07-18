@@ -11,6 +11,7 @@ def get_peers():
     if response.ok:
         peers = response.json()['fields']['list']['arrayValue']['values']
         peers = [peer['stringValue'] for peer in peers]
+        print('Found peers:', peers)
         return peers
         # './ngrok http 8000'
         # ngrok = subprocess.Popen('./ngrok http 8000')

@@ -5,18 +5,20 @@ import time
 from Blockchain import Blockchain
 from Block import Block
 
+
 app = Flask(__name__)
 # the node's copy of blockchain
 blockchain = Blockchain()
 # the address to other participating members of the network
 peers = set()
+my_address = ''
 
 
-def main(_peers):
-    global peers
+def main(_my_address, _peers):
+    global peers, my_address
     peers = _peers
-    consensus()
-    app.run(port=8000)
+    my_address = _my_address
+    app.run(port=8000, debug=True)
 
 
 # endpoint to add new peers to the network.

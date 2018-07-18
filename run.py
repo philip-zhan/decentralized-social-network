@@ -6,9 +6,9 @@ import client
 
 
 def main():
-    public_url = run_ngrok()
+    my_address = run_ngrok()
     peers = firebase.get_peers()
-    run_server(peers)
+    run_server(my_address, peers)
 
 
 def run_ngrok():
@@ -25,8 +25,8 @@ def run_ngrok():
     exit()
 
 
-def run_server(peers):
-    server.main(peers)
+def run_server(my_address, peers):
+    server.main(my_address, peers)
 
 
 if __name__ == '__main__':
