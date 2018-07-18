@@ -12,6 +12,13 @@ blockchain = Blockchain()
 peers = set()
 
 
+def main(_peers):
+    global peers
+    peers = _peers
+    consensus()
+    app.run(port=8000)
+
+
 # endpoint to add new peers to the network.
 @app.route('/add_nodes', methods=['POST'])
 def register_new_peers():
@@ -128,11 +135,4 @@ def consensus():
 
 
 if __name__ == '__main__':
-
-    with open('tracker.json') as f:
-        nodes = json.load(f)
-        for node in nodes:
-            peers.add(node)
-    print("peers: ", peers)
-    print("Got the longest chanin: "+str(consensus()))
-    app.run(debug=True, port=8000)
+    main()
