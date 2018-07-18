@@ -1,18 +1,9 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+import requests
 
-# Use the application default credentials
-cred = credentials.Certificate('dsn-tracker-firebase-adminsdk-fcee1-d0c0dd6de5.json')
-firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+api_path = 'https://firestore.googleapis.com/v1beta1/'
+data_path = 'projects/dsn-tracker/databases/(default)/documents/peer/address'
+key = ''
+response = requests.get(api_path + data_path)
 
-address_ref = db.collection(u'peer').document(u'address')
-address_ref.set({
-    'list': [
-        "http://a2b8f7fb.ngrok.io",
-        "http://1a902fa4.ngrok.io",
-        "http://497b8815.ngrok.io"
-    ]
-})
+print(response.json())
