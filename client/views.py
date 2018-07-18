@@ -10,9 +10,9 @@ posts = []
 
 
 def fetch_posts():
-    get_chain_address = "{}/chain".format(CONNECTED_NODE_ADDRESS)
+    get_chain_address = "{}/sync".format(CONNECTED_NODE_ADDRESS)
     response = requests.get(get_chain_address)
-    if response.status_code == 200:
+    if response.ok:
         content = []
         chain = json.loads(response.content)
         for block in chain["chain"]:

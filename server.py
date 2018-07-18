@@ -93,10 +93,23 @@ def validate_and_add_block():
     return "Block added to the chain", 201
 
 
+# endpoint to sync the blockchain and return the new blockchain
+@app.route('/sync', methods=['GET'])
+def sync():
+    consensus()
+    sync_chain = get_chain()
+
+    return sync_chain, 200
+
+
 def announce_new_block(block):
     for peer in peers:
         url = "http://{}/add_block".format(peer)
-        requests.post(url, data=json.dumps(block.__dict__, sort_keys=True))
+        try:
+            requests.post(url, data=json.dumps(block.__dict__, sort_keys=True))
+        except:
+            # Delete the server that is down
+            print("peer {} is down".format(str(peer)))
 
 
 def consensus():
@@ -115,22 +128,22 @@ def consensus():
             response = requests.get(node + '/chain', timeout=1)
         except:
             print("connection timeout")
-            return
+            continue
         if response.ok:
             length = response.json()['length']
             chain = response.json()['chain']
-            print(chain)
-            print(length)
-            print("current length: ", current_len)
+            # print(chain)
+            # print(length)
+            # print("current length: ", current_len)
             if length > current_len and blockchain.check_chain_validity(chain):
-                print("longer chain")
+                # print("longer chain")
                 current_len = length
                 longest_chain = chain
 
     if longest_chain:
-        blockchain = longest_chain
+        blockchain = Blockchain(longest_chain)
         print("COPIED THE LONGEST CHAIN")
-        print(blockchain)
+        print(longest_chain)
         return True
 
     return False
