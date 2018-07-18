@@ -59,7 +59,6 @@ class Blockchain:
         print(block.compute_hash())
         return isValidPrefix and isSameHash
 
-
     def proof_of_work(self, block):
         """
         Function that tries different values of nonce to get a hash
@@ -103,7 +102,8 @@ class Blockchain:
         for block in chain:
             block_hash = block['hash']
             # block = namedtuple(Block, )
-            block = Block(block['index'], block['transactions'], block['timestamp'], block['previous_hash'], block['nonce'])
+            block = Block(block['index'], block['transactions'], block['timestamp'], block['previous_hash'],
+                          block['nonce'])
             # block.hash = block_hash
             # print(block)
             # remove the hash field to recompute the hash again
