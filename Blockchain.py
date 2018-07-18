@@ -7,10 +7,17 @@ class Blockchain:
     # difficulty of our PoW algorithm
     difficulty = 2
 
-    def __init__(self):
+    def __init__(self, chain=None):
         self.unconfirmed_transactions = []
-        self.chain = []
+        self.chain = [] if chain is None else Blockchain.build_chain(chain)
         self.create_genesis_block()
+
+    @staticmethod
+    def build_chain(chain):
+        blockchain = []
+        for block in chain:
+            blockchain.append(Block(block["index"], block["transactions"], block["timestamp"], block["previous_hash"], block["nonce"]))
+        return blockchain
 
     def create_genesis_block(self):
         """
@@ -53,10 +60,10 @@ class Blockchain:
         """
         isValidPrefix = block_hash.startswith('0' * self.difficulty)
         isSameHash = block_hash == block.compute_hash()
-        print(isValidPrefix)
-        print(isSameHash)
-        print(block_hash)
-        print(block.compute_hash())
+        # print(isValidPrefix)
+        # print(isSameHash)
+        # print(block_hash)
+        # print(block.compute_hash())
         return isValidPrefix and isSameHash
 
     def proof_of_work(self, block):
