@@ -91,6 +91,15 @@ def validate_and_add_block():
     return "Block added to the chain", 201
 
 
+# endpoint to sync the blockchain and return the new blockchain
+@app.route('/sync', methods=['GET'])
+def sync():
+    consensus()
+    sync_chain = get_chain()
+
+    return sync_chain
+
+
 def announce_new_block(block):
     for peer in peers:
         url = "http://{}/add_block".format(peer)
@@ -117,7 +126,7 @@ def consensus():
             response = requests.get(node + '/chain', timeout=1)
         except:
             print("connection timeout")
-            return
+            continue
         if response.ok:
             length = response.json()['length']
             chain = response.json()['chain']
