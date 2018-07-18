@@ -134,19 +134,5 @@ def consensus():
     return False
 
 
-# with open('tracker.json') as f:
-#     nodes = json.load(f)
-#     for node in nodes:
-#         peers.add(node)
-# print("peers: ", peers)
-# consensus()
-# app.run(debug=True, port=8000)
-
 if __name__ == '__main__':
     main()
-    # with open('tracker.json') as f:
-    #     nodes = json.load(f)
-    #     for node in nodes:
-    #         peers.add(node)
-    # print("peers: ", peers)
-    # app.run(debug=True, port=8000)
