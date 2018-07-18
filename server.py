@@ -97,22 +97,50 @@ def consensus():
     global blockchain
 
     longest_chain = None
-    current_len = len(blockchain)
+    current_len = len(blockchain.chain)
 
     for node in peers:
-        response = requests.get('http://{}/chain'.format(node))
-        length = response.json()['length']
-        chain = response.json()['chain']
-        if length > current_len and blockchain.check_chain_validity(chain):
-            current_len = length
-            longest_chain = chain
+        print("syncing with peer: ", node)
+        print("=======================================================")
+        try:
+            response = requests.get(node + '/chain', timeout=1)
+        except:
+            print("connection timeout")
+            return
+        if response.ok:
+            length = response.json()['length']
+            chain = response.json()['chain']
+            print(chain)
+            print(length)
+            print("current length: ", current_len)
+            if length > current_len and blockchain.check_chain_validity(chain):
+                print("longer chain")
+                current_len = length
+                longest_chain = chain
 
     if longest_chain:
         blockchain = longest_chain
+        print("COPIED THE LONGEST CHAIN")
+        print(blockchain)
         return True
 
     return False
 
 
+with open('tracker.json') as f:
+    nodes = json.load(f)
+    for node in nodes:
+        peers.add(node)
+print("peers: ", peers)
+consensus()
+app.run(debug=True, port=8000)
+
 if __name__ == '__main__':
+
+    with open('tracker.json') as f:
+        nodes = json.load(f)
+        for node in nodes:
+            peers.add(node)
+    print("peers: ", peers)
+    consensus()
     app.run(debug=True, port=8000)

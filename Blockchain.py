@@ -1,5 +1,6 @@
 from Block import Block
 import time
+from collections import namedtuple
 
 
 class Blockchain:
@@ -18,7 +19,7 @@ class Blockchain:
         a valid hash.
         """
         genesis_block = Block(0, [], time.time(), "0")
-        genesis_block.hash = genesis_block.compute_hash()
+        genesis_block.hash = self.proof_of_work(genesis_block)
         self.chain.append(genesis_block)
 
     @property
@@ -50,8 +51,14 @@ class Blockchain:
         Check if block_hash is valid hash of block and satisfies
         the difficulty criteria.
         """
-        return (block_hash.startswith('0' * self.difficulty) and
-                block_hash == block.compute_hash())
+        isValidPrefix = block_hash.startswith('0' * self.difficulty)
+        isSameHash = block_hash == block.compute_hash()
+        print(isValidPrefix)
+        print(isSameHash)
+        print(block_hash)
+        print(block.compute_hash())
+        return isValidPrefix and isSameHash
+
 
     def proof_of_work(self, block):
         """
@@ -88,3 +95,25 @@ class Blockchain:
 
         self.unconfirmed_transactions = []
         return new_block.index
+
+    def check_chain_validity(cls, chain):
+        result = True
+        previous_hash = "0"
+
+        for block in chain:
+            block_hash = block['hash']
+            # block = namedtuple(Block, )
+            block = Block(block['index'], block['transactions'], block['timestamp'], block['previous_hash'], block['nonce'])
+            # block.hash = block_hash
+            # print(block)
+            # remove the hash field to recompute the hash again
+            # using `compute_hash` method.
+            # delattr(block, "hash")
+
+            if not cls.is_valid_proof(block, block_hash) or previous_hash != block.previous_hash:
+                result = False
+                break
+
+            block.hash, previous_hash = block_hash, block_hash
+
+        return result
