@@ -10,7 +10,8 @@ class Blockchain:
     def __init__(self, chain=None):
         self.unconfirmed_transactions = []
         self.chain = [] if chain is None else Blockchain.build_chain(chain)
-        self.create_genesis_block()
+        if chain == None :
+            self.create_genesis_block()
 
     @staticmethod
     def build_chain(chain):
