@@ -94,7 +94,11 @@ def validate_and_add_block():
 def announce_new_block(block):
     for peer in peers:
         url = "http://{}/add_block".format(peer)
-        requests.post(url, data=json.dumps(block.__dict__, sort_keys=True))
+        try:
+            requests.post(url, data=json.dumps(block.__dict__, sort_keys=True))
+        except:
+            # Delete the server that is down
+            print("peer {} is down".format(str(peer)))
 
 
 def consensus():

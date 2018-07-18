@@ -16,7 +16,9 @@ class Blockchain:
     def build_chain(chain):
         blockchain = []
         for block in chain:
-            blockchain.append(Block(block["index"], block["transactions"], block["timestamp"], block["previous_hash"], block["nonce"]))
+            block_with_hash = Block(block["index"], block["transactions"], block["timestamp"], block["previous_hash"], block["nonce"])
+            block_with_hash.hash = block["hash"]
+            blockchain.append(block_with_hash)
         return blockchain
 
     def create_genesis_block(self):
