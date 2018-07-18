@@ -97,7 +97,7 @@ def sync():
     consensus()
     sync_chain = get_chain()
 
-    return sync_chain
+    return sync_chain, 200
 
 
 def announce_new_block(block):
