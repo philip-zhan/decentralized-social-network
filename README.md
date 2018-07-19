@@ -8,8 +8,7 @@ Our decentralized social network allows the user to post without data stored on 
 
 * Server:<br/>
     In order to make the server up and accessible by users outside the LAN, the ngrok is required.<br/>
-    First, use `./ngrok http 8000` to create the URL for access.<br/>
-    Once the URL is up, run the python file `python3 server.py` and remember to install all python packages needed to run the server.<br/>
+    Start the server by running `python3 run.py` and remember to install all python packages needed to run the server.<br/>
     Now, the server should be up successfully with statistics and network traffic information displayed.<br/>
     🎉🎉🎉
 
