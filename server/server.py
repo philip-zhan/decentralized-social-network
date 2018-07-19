@@ -15,6 +15,7 @@ blockchain = Blockchain()
 # the address to other participating members of the network
 peers = set()
 my_address = ''
+cache_path = '.cache/blockchain'
 
 
 def main(_my_address, _peers):
@@ -125,22 +126,20 @@ def announce_new_block(block):
 
 # get the chain stored locally or update the stored blockchain
 def get_update_local_chain(blockchain):
-    blockchain_file = Path("blockchain.pckl")
+    blockchain_file = Path(cache_path)
     longest_chain = blockchain
     # Get the local blockchain if it exist
     if blockchain_file.is_file():
-        f = open('blockchain.pckl', 'rb')
-        local_blockchain = pickle.load(f)
-        f.close()
+        with open(cache_path, 'rb') as f:
+            local_blockchain = pickle.load(f)
         print("local chain loaded: {} with length {}".format(local_blockchain, len(local_blockchain.chain)))
 
         if len(local_blockchain.chain) < len(blockchain.chain):
             longest_chain = blockchain
             print("Global chain is the longest one and it is saved")
             # save to the local chain
-            f = open('blockchain.pckl', 'wb')
-            pickle.dump(longest_chain, f)
-            f.close()
+            with open(cache_path, 'wb') as f:
+                pickle.dump(longest_chain, f)
         else:
             longest_chain = local_blockchain
             print("local chain is longest chain with length: {}".format(len(longest_chain.chain)))
@@ -148,9 +147,8 @@ def get_update_local_chain(blockchain):
     else:
         print("No local chain, new chain is stored. returned: {}".format(blockchain))
         # save to the local chain
-        f = open('blockchain.pckl', 'wb')
-        pickle.dump(blockchain, f)
-        f.close()
+        with open(cache_path, 'wb') as f:
+            pickle.dump(blockchain, f)
 
     return longest_chain
 
