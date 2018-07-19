@@ -1,7 +1,7 @@
 import datetime
 import json
 import requests
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, send_from_directory
 from client import app
 
 
@@ -29,8 +29,7 @@ def fetch_posts():
 def index():
     fetch_posts()
     return render_template('index.html',
-                           title='YourNet: Decentralized '
-                                 'content sharing',
+                           title='Mask',
                            posts=posts,
                            node_address=CONNECTED_NODE_ADDRESS,
                            readable_time=timestamp_to_string)
@@ -58,6 +57,10 @@ def submit_textarea():
 
     return redirect('/')
 
+# @app.route('/fonts/<path:filename>')
+# def serve_static(filename):
+#     root_dir = os.path.dirname(os.getcwd())
+#     return send_from_directory(os.path.join(root_dir, 'static', 'ttf'),
 
 def timestamp_to_string(epoch_time):
     return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')

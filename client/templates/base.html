@@ -1,10 +1,25 @@
 <html>
   <head>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}" />
+    <link href="https://fonts.googleapis.com/css?family=Gaegu:400,700" rel="stylesheet">
     <title>{{ title }}</title>
   </head>
-  <body>
-    <div><a href="/index">Home</a></div>
-    <center><h1>{{ title }}</h1></center>
+  <body style="overflow:hidden">
+    <div style="text-align: right; margin-right: 10pt; font-family: 'Gaegu', cursive; height: 5pt"><a href="/index">Logout</a></div>
+    <center><p class="title_text">{{ title }}</p></center>
+    <center>
+      <form action="/submit" id="textform" method="post">
+          <textarea style="border-top:solid 2px #a9a9a9; border-left:solid 2px #a9a9a9;border-bottom:solid 1px #d3d3d3; border-right:solid 1px #d3d3d3;" name="content" rows="6" class="input_box" cols="100" class="text" placeholder="Just write whatever you want to..."></textarea>
+          <br>
+          <br>
+          <input type="text" name="author" class="input_box" placeholder="Your name">
+          <button type="submit" class="min-resync-post-btn">Post</button>
+      </form>
+    </center>
+    <a href="{{node_address}}/mine" target="_blank"><button class="min-resync-post-btn">Request to mine</button></a>
+    <a href="/"><button class="min-resync-post-btn">Resync</button></a>
+    <br>
+    <br>
     <hr>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -15,6 +30,47 @@
     </ul>
     {% endif %}
     {% endwith %}
-    {% block content %}{% endblock %}
+
+    <div id="" style="overflow:scroll; height:400px;">
+      {% block content %}{% endblock %}
+    </div>
+
   </body>
+  <style type="text/css">
+    .title_text {
+      font-family: 'Gaegu', cursive;
+      font-weight: 700;
+      font-size: 45pt;
+      height: 20pt;
+    }
+    .min-resync-post-btn {
+      background: #ffffff;
+      color: #2c3e50;
+      padding-left: 10px;
+      padding-right: 10px;
+      cursor: pointer;
+      margin-left: 2px;
+      margin-right: 2px;
+      outline: none;
+      height: 30px;
+      border-radius: 12px;
+      font-family: 'Gaegu', cursive;
+      font-weight: 700;
+      font-size: 12pt;
+    }
+    .input_box {
+      background: #ffffff;
+      color: #2c3e50;
+      padding-left: 10px;
+      padding-right: 10px;
+      cursor: pointer;
+      margin-left: 2px;
+      margin-right: 2px;
+      outline: none;
+      border-radius: 5px;
+      font-family: 'Gaegu', cursive;
+      font-weight: 700;
+      font-size: 12pt;
+    }
+  </style>
 </html>
