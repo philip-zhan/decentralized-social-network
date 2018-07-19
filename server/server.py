@@ -4,6 +4,8 @@ import json
 import time
 from server.Blockchain import Blockchain
 from server.Block import Block
+import pickle
+from pathlib import Path
 from tracker import tracker
 
 
@@ -16,13 +18,17 @@ my_address = ''
 
 
 def main(_my_address, _peers):
-    global peers, my_address
+    global peers, my_address, blockchain
     peers = set(_peers)
     my_address = _my_address
     if my_address in peers:
         peers.remove(my_address)
     else:
         tracker.patch_peers(peers, my_address)
+    local_chain = get_update_local_chain(blockchain)
+    # print("Chain on startup is: {}".format(blockchain.chain))
+    blockchain = local_chain
+    # print("Got local chain on startup: {}".format(blockchain.chain))
     app.run(port=8000, debug=True)
 
 
@@ -117,6 +123,38 @@ def announce_new_block(block):
             print("peer {} is down".format(str(peer)))
 
 
+# get the chain stored locally or update the stored blockchain
+def get_update_local_chain(blockchain):
+    blockchain_file = Path("blockchain.pckl")
+    longest_chain = blockchain
+    # Get the local blockchain if it exist
+    if blockchain_file.is_file():
+        f = open('blockchain.pckl', 'rb')
+        local_blockchain = pickle.load(f)
+        f.close()
+        print("local chain loaded: {} with length {}".format(local_blockchain, len(local_blockchain.chain)))
+
+        if len(local_blockchain.chain) < len(blockchain.chain):
+            longest_chain = blockchain
+            print("Global chain is the longest one and it is saved")
+            # save to the local chain
+            f = open('blockchain.pckl', 'wb')
+            pickle.dump(longest_chain, f)
+            f.close()
+        else:
+            longest_chain = local_blockchain
+            print("local chain is longest chain with length: {}".format(len(longest_chain.chain)))
+
+    else:
+        print("No local chain, new chain is stored. returned: {}".format(blockchain))
+        # save to the local chain
+        f = open('blockchain.pckl', 'wb')
+        pickle.dump(blockchain, f)
+        f.close()
+
+    return longest_chain
+
+
 def consensus():
     """
     Our simple consensus algorithm. If a longer valid chain is found, our chain is replaced with it.
@@ -148,7 +186,8 @@ def consensus():
     if longest_chain:
         blockchain = Blockchain(longest_chain)
         print("COPIED THE LONGEST CHAIN")
-        print(longest_chain)
+        #print(longest_chain)
+        get_update_local_chain(blockchain)
         return True
 
     return False
