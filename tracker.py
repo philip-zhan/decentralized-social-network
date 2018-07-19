@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 api_path = 'https://firestore.googleapis.com/v1beta1/'
@@ -20,7 +21,27 @@ def get_peers():
         # subprocess.run(['python3 client.py'], shell=True)
     else:
         print("Failed to access tracker at ", path)
+        exit()
 
 
-def patch_peers():
-    pass
+def patch_peers(peers, my_address):
+    path = api_path + data_path
+    data = {
+        "fields": {
+            "list": {
+                "arrayValue": {
+                    "values": []
+                }
+            }
+        }
+    }
+    for peer in peers:
+        data['fields']['list']['arrayValue']['values'].append({'stringValue': peer})
+    data['fields']['list']['arrayValue']['values'].append({'stringValue': my_address})
+    # print(json.dumps(data))
+    response = requests.patch(path, json.dumps(data))
+    if response.ok:
+        print('Updated peer list in tracker')
+    else:
+        print('Failed to update peer list in tracker')
+    return response.ok

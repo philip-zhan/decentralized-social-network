@@ -4,6 +4,7 @@ import json
 import time
 from Blockchain import Blockchain
 from Block import Block
+import tracker
 
 
 app = Flask(__name__)
@@ -16,8 +17,12 @@ my_address = ''
 
 def main(_my_address, _peers):
     global peers, my_address
-    peers = _peers
+    peers = set(_peers)
     my_address = _my_address
+    if my_address in peers:
+        peers.remove(my_address)
+    else:
+        tracker.patch_peers(peers, my_address)
     app.run(port=8000, debug=True)
 
 
@@ -121,11 +126,11 @@ def consensus():
     longest_chain = None
     current_len = len(blockchain.chain)
 
-    for node in peers:
-        print("syncing with peer: ", node)
+    for peer in peers:
+        print("syncing with peer:", peer)
         print("=======================================================")
         try:
-            response = requests.get(node + '/chain', timeout=1)
+            response = requests.get(peer + '/chain', timeout=1)
         except:
             print("connection timeout")
             continue
