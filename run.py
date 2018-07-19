@@ -1,14 +1,14 @@
 import subprocess
 import requests
-import firebase
+import tracker
 import server
 import client
 
 
 def main():
-    public_url = run_ngrok()
-    peers = firebase.get_peers()
-    run_server(peers)
+    my_address = run_ngrok()
+    peers = tracker.get_peers()
+    run_server(my_address, peers)
 
 
 def run_ngrok():
@@ -25,8 +25,8 @@ def run_ngrok():
     exit()
 
 
-def run_server(peers):
-    server.main(peers)
+def run_server(my_address, peers):
+    server.main(my_address, peers)
 
 
 if __name__ == '__main__':
