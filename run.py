@@ -2,7 +2,6 @@ import subprocess
 import requests
 import tracker
 import server
-import client
 
 
 def main():

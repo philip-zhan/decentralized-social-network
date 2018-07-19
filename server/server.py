@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify
 import requests
 import json
 import time
-from Blockchain import Blockchain
-from Block import Block
+from server.Blockchain import Blockchain
+from server.Block import Block
 import tracker
 
 
