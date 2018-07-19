@@ -4,7 +4,7 @@ import json
 import time
 from server.Blockchain import Blockchain
 from server.Block import Block
-import tracker
+from tracker import tracker
 
 
 app = Flask(__name__)
