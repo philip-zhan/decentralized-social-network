@@ -7,6 +7,7 @@ from server.Block import Block
 import pickle
 from pathlib import Path
 from tracker import tracker
+import os
 
 
 app = Flask(__name__)
@@ -15,7 +16,8 @@ blockchain = Blockchain()
 # the address to other participating members of the network
 peers = set()
 my_address = ''
-cache_path = '.cache/blockchain'
+cache_path = '.cache'
+blockchain_cache_path = cache_path + '/blockchain'
 
 
 def main(_my_address, _peers):
@@ -26,9 +28,9 @@ def main(_my_address, _peers):
         peers.remove(my_address)
     else:
         tracker.patch_peers(peers, my_address)
-    local_chain = get_update_local_chain(blockchain)
+    create_cache_dir(cache_path)
+    blockchain = get_update_local_chain(blockchain)
     # print("Chain on startup is: {}".format(blockchain.chain))
-    blockchain = local_chain
     # print("Got local chain on startup: {}".format(blockchain.chain))
     app.run(port=8000, debug=True)
 
@@ -124,13 +126,19 @@ def announce_new_block(block):
             print("peer {} is down".format(str(peer)))
 
 
+def create_cache_dir(cache_path):
+    cache_dir = Path(cache_path)
+    if not cache_dir.is_dir():
+        os.mkdir(cache_path)
+
+
 # get the chain stored locally or update the stored blockchain
 def get_update_local_chain(blockchain):
-    blockchain_file = Path(cache_path)
+    blockchain_file = Path(blockchain_cache_path)
     longest_chain = blockchain
     # Get the local blockchain if it exist
     if blockchain_file.is_file():
-        with open(cache_path, 'rb') as f:
+        with open(blockchain_cache_path, 'rb') as f:
             local_blockchain = pickle.load(f)
         print("local chain loaded: {} with length {}".format(local_blockchain, len(local_blockchain.chain)))
 
@@ -138,16 +146,15 @@ def get_update_local_chain(blockchain):
             longest_chain = blockchain
             print("Global chain is the longest one and it is saved")
             # save to the local chain
-            with open(cache_path, 'wb') as f:
+            with open(blockchain_cache_path, 'wb') as f:
                 pickle.dump(longest_chain, f)
         else:
             longest_chain = local_blockchain
             print("local chain is longest chain with length: {}".format(len(longest_chain.chain)))
-
     else:
         print("No local chain, new chain is stored. returned: {}".format(blockchain))
         # save to the local chain
-        with open(cache_path, 'wb') as f:
+        with open(blockchain_cache_path, 'wb') as f:
             pickle.dump(blockchain, f)
 
     return longest_chain
