@@ -1,6 +1,5 @@
-from Block import Block
+from server.Block import Block
 import time
-from collections import namedtuple
 
 
 class Blockchain:

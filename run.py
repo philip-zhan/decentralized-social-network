@@ -1,8 +1,7 @@
 import subprocess
 import requests
-import tracker
-import server
-import client
+from tracker import tracker
+from server import server
 
 
 def main():
