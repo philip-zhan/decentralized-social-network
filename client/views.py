@@ -30,7 +30,7 @@ def index():
     mine_request = "{}/mine".format(CONNECTED_NODE_ADDRESS)
     response = requests.get(mine_request)
     if response.ok:
-        print(response)
+        print(response.content)
     fetch_posts()
     return render_template('index.html',
                            title='Mask',
