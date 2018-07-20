@@ -6,12 +6,14 @@ api_path = 'https://firestore.googleapis.com/v1beta1/'
 data_path = 'projects/dsn-tracker/databases/(default)/documents/peer/address'
 
 
-def get_peers():
+def get_peers(my_address):
     path = api_path + data_path
     response = requests.get(path)
     if response.ok:
         peers = response.json()['fields']['list']['arrayValue']['values']
         peers = [peer['stringValue'] for peer in peers]
+        if my_address in peers:
+            peers.remove(my_address)
         print('Found peers:', peers)
         return peers
         # './ngrok http 8000'
@@ -20,7 +22,7 @@ def get_peers():
         # server.main(peers)
         # subprocess.run(['python3 client.py'], shell=True)
     else:
-        print("Failed to access tracker at ", path)
+        print("Failed to access tracker at", path)
         exit()
 
 
