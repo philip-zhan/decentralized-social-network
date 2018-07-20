@@ -1,13 +1,11 @@
 import subprocess
 import requests
-from tracker import tracker
 from server import server
 
 
 def main():
     my_address = run_ngrok()
-    peers = tracker.get_peers()
-    run_server(my_address, peers)
+    run_server(my_address)
 
 
 def run_ngrok():
@@ -24,8 +22,8 @@ def run_ngrok():
     exit()
 
 
-def run_server(my_address, peers):
-    server.main(my_address, peers)
+def run_server(my_address):
+    server.main(my_address)
 
 
 if __name__ == '__main__':

@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify
 import requests
 import json
 import time
+import pickle
+import os
+from flask import Flask, request, jsonify
 from server.Blockchain import Blockchain
 from server.Block import Block
-import pickle
 from pathlib import Path
 from tracker import tracker
-import os
 
 
 app = Flask(__name__)
@@ -20,14 +20,9 @@ cache_path = '.cache'
 blockchain_cache_path = cache_path + '/blockchain'
 
 
-def main(_my_address, _peers):
-    global peers, my_address, blockchain
-    peers = set(_peers)
+def main(_my_address):
+    global my_address, blockchain
     my_address = _my_address
-    if my_address in peers:
-        peers.remove(my_address)
-    else:
-        tracker.patch_peers(peers, my_address)
     create_cache_dir(cache_path)
     blockchain = get_update_local_chain(blockchain)
     # print("Chain on startup is: {}".format(blockchain.chain))
@@ -164,20 +159,20 @@ def consensus():
     """
     Our simple consensus algorithm. If a longer valid chain is found, our chain is replaced with it.
     """
-    global blockchain
+    global blockchain, peers
 
     longest_chain = None
     current_len = len(blockchain.chain)
+    peers = tracker.get_peers(my_address)
 
     for peer in peers:
-        print("syncing with peer:", peer)
-        print("=======================================================")
         try:
-            response = requests.get(peer + '/chain', timeout=1)
+            response = requests.get(peer + '/chain', timeout=0.5)
         except:
-            print("connection timeout")
+            print('Failed to sync with peer', peer)
             continue
         if response.ok:
+            print('Synced with peer', peer)
             length = response.json()['length']
             chain = response.json()['chain']
             # print(chain)
